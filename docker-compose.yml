@@ -1,0 +1,65 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: exbags
+      POSTGRES_USER: exbags
+      POSTGRES_PASSWORD: exbags_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    restart: always
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DATABASE_URL=postgres://exbags:exbags_password@db:5432/exbags
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+      - media_files:/app/media
+    command: python manage.py runserver 0.0.0.0:8000
+
+  celery:
+    build: ./backend
+    restart: always
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DATABASE_URL=postgres://exbags:exbags_password@db:5432/exbags
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+    command: celery -A config worker -l info
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+
+volumes:
+  postgres_data:
+  media_files:
