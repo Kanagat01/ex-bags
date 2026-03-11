@@ -1,7 +1,7 @@
 [project]
-name = "backend"
+name = "ex-bags-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Ex-Bags platform backend"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,6 +16,7 @@ dependencies = [
     "pillow>=12.1.1",
     "psycopg[binary]>=3.3.3",
     "redis>=7.3.0",
+    "requests>=2.32.5",
     "weasyprint>=68.1",
 ]
 

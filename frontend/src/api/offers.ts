@@ -1,0 +1,28 @@
+import api from "./client"
+import { Offer, PersonalDataPayload } from "@/types"
+
+export const getOffer = async (token: string): Promise<Offer> => {
+  const { data } = await api.get<Offer>(`/offer/${token}/`)
+  return data
+}
+
+export const acceptOffer = async (token: string): Promise<{ detail: string }> => {
+  const { data } = await api.post<{ detail: string }>(`/offer/${token}/accept/`)
+  return data
+}
+
+export const declineOffer = async (token: string): Promise<{ detail: string }> => {
+  const { data } = await api.post<{ detail: string }>(`/offer/${token}/decline/`)
+  return data
+}
+
+export const submitPersonalData = async (
+  token: string,
+  payload: PersonalDataPayload
+): Promise<{ detail: string }> => {
+  const { data } = await api.post<{ detail: string }>(
+    `/offer/${token}/personal-data/`,
+    payload
+  )
+  return data
+}
