@@ -10,10 +10,11 @@ import {
   approveApplication,
   rejectApplication,
   downloadContract,
+  getAdminContractUrl
 } from "@/api"
 import { Application, ApplicationStatus } from "@/types"
 import { Button, Input, Modal, StatusBadge } from "@/components/ui"
-import { PhotoGallery, PageLoader, ErrorMessage } from "@/components/shared"
+import { PhotoGallery, PageLoader, ErrorMessage, ContractViewer } from "@/components/shared"
 import {
   FORMAT_LABELS,
   CONDITION_LABELS,
@@ -42,6 +43,9 @@ export default function ApplicationDetailPage() {
   const [isApproveOpen, setIsApproveOpen] = useState(false)
   const [isRejectOpen, setIsRejectOpen] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
+
+  const [isContractOpen, setIsContractOpen] = useState(false)
+  const [contractPreviewUrl, setContractPreviewUrl] = useState<string | null>(null)
 
   const approveForm = useForm<ApproveForm>({
     resolver: zodResolver(approveSchema) as Resolver<ApproveForm>,
@@ -96,6 +100,16 @@ export default function ApplicationDetailPage() {
       window.open(url, "_blank")
     } catch {
       setActionError("Не удалось скачать договор")
+    }
+  }
+
+  const handlePreviewContract = async () => {
+    try {
+      const { url } = await getAdminContractUrl(id)
+      setContractPreviewUrl(url)
+      setIsContractOpen(true)
+    } catch {
+      setActionError("Договор ещё не сформирован")
     }
   }
 
@@ -202,6 +216,12 @@ export default function ApplicationDetailPage() {
               </>
             )}
 
+            {application.status === ApplicationStatus.ACCEPTED && (
+              <Button variant="secondary" onClick={handlePreviewContract} fullWidth>
+                Предпросмотр договора
+              </Button>
+            )}
+
             {canDownload && (
               <Button variant="secondary" onClick={handleDownload} fullWidth>
                 Скачать подписанный договор
@@ -285,6 +305,14 @@ export default function ApplicationDetailPage() {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isContractOpen}
+        onClose={() => setIsContractOpen(false)}
+        title="Предпросмотр договора"
+      >
+        {contractPreviewUrl && <ContractViewer url={contractPreviewUrl} />}
       </Modal>
     </div>
   )

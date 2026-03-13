@@ -124,3 +124,20 @@ class AdminContractDownloadView(APIView):
             )
 
         return Response({"url": application.contract.pdf_file.url})
+
+
+class AdminContractPreviewView(APIView):
+    """GET /api/admin/applications/:id/contract/"""
+
+    permission_classes = [IsAdminUser]
+
+    def get(self, request: Request, pk: int) -> Response:
+        application = Application.objects.get(pk=pk)
+
+        if not hasattr(application, "contract"):
+            return Response(
+                {"detail": "Договор ещё не сформирован"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response({"url": application.contract.pdf_file.url})

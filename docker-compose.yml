@@ -46,19 +46,19 @@ services:
       - REDIS_URL=redis://redis:6379/0
     volumes:
       - ./backend:/app
-    command: celery -A config worker -l info
+    command: uv run celery -A config worker -l info
 
-  # frontend:
-  #   build: ./frontend
-  #   restart: always
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #     - /app/.next
-  #   environment:
-  #     - NEXT_PUBLIC_API_URL=http://localhost:8000
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
 
 volumes:
   postgres_data:

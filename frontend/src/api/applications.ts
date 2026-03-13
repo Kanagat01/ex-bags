@@ -79,3 +79,10 @@ export const downloadContract = async (id: string): Promise<{ url: string }> => 
   )
   return data
 }
+
+export const getAdminContractUrl = async (id: string): Promise<{ url: string }> => {
+  const { data } = await api.get<{ url: string }>(
+    `/admin/applications/${id}/contract/`
+  )
+  return data
+}
