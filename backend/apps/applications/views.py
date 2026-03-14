@@ -43,7 +43,7 @@ class AdminApplicationListView(ListAPIView):
 
         # Фильтры
         status_filter = self.request.query_params.get("status")
-        format_filter = self.request.query_params.get("format")
+        format_filter = self.request.query_params.get("deal_format")
         date_from = self.request.query_params.get("date_from")
         date_to = self.request.query_params.get("date_to")
 

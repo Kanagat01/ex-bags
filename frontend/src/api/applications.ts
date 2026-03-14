@@ -38,7 +38,7 @@ export const createApplication = async (
 
 export const getApplications = async (params?: {
   status?: string
-  format?: string
+  deal_format?: string
   date_from?: string
   date_to?: string
 }): Promise<Application[]> => {

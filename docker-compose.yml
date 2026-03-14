@@ -44,7 +44,7 @@ services:
       - ./backend/apps:/app/apps
       - ./backend/config:/app/config
       - ./backend/manage.py:/app/manage.py
-    command: uv run celery -A config worker -l info    
+    command: uv run celery -A config worker -l info --uid=nobody
   frontend:
     build: ./frontend
     restart: always

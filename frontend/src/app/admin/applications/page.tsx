@@ -38,7 +38,7 @@ export default function AdminApplicationsPage() {
     try {
       const data = await getApplications({
         status: filters.status || undefined,
-        format: filters.format || undefined,
+        deal_format: filters.format || undefined,
         date_from: filters.date_from || undefined,
         date_to: filters.date_to || undefined,
       })
