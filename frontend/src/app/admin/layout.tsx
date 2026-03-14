@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { useAuthStore } from "@/store"
@@ -16,12 +16,19 @@ export default function AdminLayout({
   const pathname = usePathname()
   const { isAuthenticated } = useAuthStore()
   const { handleLogout } = useAuth()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    if (!isAuthenticated && pathname !== "/admin/login") {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated && pathname !== "/admin/login") {
       router.replace("/admin/login")
     }
-  }, [isAuthenticated, pathname, router])
+  }, [mounted, isAuthenticated, pathname, router])
+
+  if (!mounted) return null
 
   if (pathname === "/admin/login") {
     return <>{children}</>
