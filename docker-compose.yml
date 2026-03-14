@@ -2,10 +2,8 @@ services:
   db:
     image: postgres:16-alpine
     restart: always
-    environment:
-      POSTGRES_DB: exbags
-      POSTGRES_USER: exbags
-      POSTGRES_PASSWORD: exbags_password
+    env_file:
+      - ./backend/.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -20,19 +18,19 @@ services:
   backend:
     build: ./backend
     restart: always
+    env_file:
+      - ./backend/.env
     depends_on:
       - db
       - redis
     ports:
       - "8000:8000"
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
-      - DATABASE_URL=postgres://exbags:exbags_password@db:5432/exbags
-      - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./backend:/app
+      - ./backend/apps:/app/apps
+      - ./backend/config:/app/config
+      - ./backend/manage.py:/app/manage.py
       - media_files:/app/media
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uv run python manage.py runserver 0.0.0.0:8000
 
   celery:
     build: ./backend
@@ -40,25 +38,24 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
-      - DATABASE_URL=postgres://exbags:exbags_password@db:5432/exbags
-      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - ./backend/.env
     volumes:
-      - ./backend:/app
-    command: uv run celery -A config worker -l info
-
+      - ./backend/apps:/app/apps
+      - ./backend/config:/app/config
+      - ./backend/manage.py:/app/manage.py
+    command: uv run celery -A config worker -l info    
   frontend:
     build: ./frontend
     restart: always
+    env_file:
+      - ./frontend/.env
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules
       - /app/.next
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
 
 volumes:
   postgres_data:
