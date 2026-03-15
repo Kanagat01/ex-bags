@@ -44,8 +44,8 @@ export default function PersonalDataPage() {
   })
 
   const onSubmit: SubmitHandler<PersonalDataForm> = async (data) => {
-    await submitPersonalData(token, data as PersonalDataPayload)
-    router.push(`/sign/${token}`)
+    const response = await submitPersonalData(token, data as PersonalDataPayload)
+    router.push(`/sign/${response.sign_token}`)
   }
 
   return (

@@ -9,12 +9,11 @@ import {
   getApplication,
   approveApplication,
   rejectApplication,
-  downloadContract,
   getAdminContractUrl
 } from "@/api"
 import { Application, ApplicationStatus } from "@/types"
 import { Button, Input, Modal, StatusBadge } from "@/components/ui"
-import { PhotoGallery, PageLoader, ErrorMessage, ContractViewer } from "@/components/shared"
+import { PhotoGallery, PageLoader, ErrorMessage } from "@/components/shared"
 import {
   FORMAT_LABELS,
   CONDITION_LABELS,
@@ -38,14 +37,12 @@ export default function ApplicationDetailPage() {
   const { id } = useParams<{ id: string }>()
 
   const [application, setApplication] = useState<Application | null>(null)
+  const [contractUrl, setContractUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isApproveOpen, setIsApproveOpen] = useState(false)
   const [isRejectOpen, setIsRejectOpen] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
-
-  const [isContractOpen, setIsContractOpen] = useState(false)
-  const [contractPreviewUrl, setContractPreviewUrl] = useState<string | null>(null)
 
   const approveForm = useForm<ApproveForm>({
     resolver: zodResolver(approveSchema) as Resolver<ApproveForm>,
@@ -59,6 +56,18 @@ export default function ApplicationDetailPage() {
     try {
       const data = await getApplication(id)
       setApplication(data)
+
+      if (
+      data.status === ApplicationStatus.ACCEPTED ||
+      data.status === ApplicationStatus.CONTRACT_SIGNED
+    ) {
+      try {
+        const { url } = await getAdminContractUrl(id)
+        setContractUrl(`${process.env.NEXT_PUBLIC_API_URL}${url}`)
+      } catch {
+        // договор ещё не сгенерирован — не критично
+      }
+    }
     } catch {
       setError("Заявка не найдена")
     } finally {
@@ -91,25 +100,6 @@ export default function ApplicationDetailPage() {
     } catch (e: unknown) {
       const err = e as { response?: { data?: { detail?: string } } }
       setActionError(err.response?.data?.detail ?? "Ошибка")
-    }
-  }
-
-  const handleDownload = async () => {
-    try {
-      const { url } = await downloadContract(id)
-      window.open(url, "_blank")
-    } catch {
-      setActionError("Не удалось скачать договор")
-    }
-  }
-
-  const handlePreviewContract = async () => {
-    try {
-      const { url } = await getAdminContractUrl(id)
-      setContractPreviewUrl(url)
-      setIsContractOpen(true)
-    } catch {
-      setActionError("Договор ещё не сформирован")
     }
   }
 
@@ -216,16 +206,17 @@ export default function ApplicationDetailPage() {
               </>
             )}
 
-            {application.status === ApplicationStatus.ACCEPTED && (
-              <Button variant="secondary" onClick={handlePreviewContract} fullWidth>
-                Предпросмотр договора
-              </Button>
-            )}
-
-            {canDownload && (
-              <Button variant="secondary" onClick={handleDownload} fullWidth>
-                Скачать подписанный договор
-              </Button>
+            {contractUrl && (
+              <a
+                href={contractUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center border border-black px-5 py-2.5 text-sm font-medium hover:bg-neutral-100 transition-colors"
+              >
+                {application.status === ApplicationStatus.CONTRACT_SIGNED
+                  ? "Скачать подписанный договор"
+                  : "Предпросмотр договора"}
+              </a>
             )}
           </div>
         </div>
@@ -305,14 +296,6 @@ export default function ApplicationDetailPage() {
             </Button>
           </div>
         </form>
-      </Modal>
-
-      <Modal
-        isOpen={isContractOpen}
-        onClose={() => setIsContractOpen(false)}
-        title="Предпросмотр договора"
-      >
-        {contractPreviewUrl && <ContractViewer url={contractPreviewUrl} />}
       </Modal>
     </div>
   )

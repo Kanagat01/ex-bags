@@ -44,6 +44,7 @@ services:
       - ./backend/apps:/app/apps
       - ./backend/config:/app/config
       - ./backend/manage.py:/app/manage.py
+      - media_files:/app/media
     command: uv run celery -A config worker -l info --uid=nobody
   frontend:
     build: ./frontend

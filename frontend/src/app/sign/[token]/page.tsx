@@ -29,7 +29,7 @@ export default function SignPage() {
 
   useEffect(() => {
     getContractUrl(token)
-      .then((res) => setContractUrl(res.url))
+      .then((res) => setContractUrl(`${process.env.NEXT_PUBLIC_API_URL}${res.url}`))
       .catch((e) => setFetchError(e.response?.data?.detail ?? "Договор не найден"))
       .finally(() => setIsLoading(false))
   }, [token])

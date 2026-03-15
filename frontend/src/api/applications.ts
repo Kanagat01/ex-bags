@@ -73,13 +73,6 @@ export const rejectApplication = async (
   return data
 }
 
-export const downloadContract = async (id: string): Promise<{ url: string }> => {
-  const { data } = await api.get<{ url: string }>(
-    `/admin/applications/${id}/download/`
-  )
-  return data
-}
-
 export const getAdminContractUrl = async (id: string): Promise<{ url: string }> => {
   const { data } = await api.get<{ url: string }>(
     `/admin/applications/${id}/contract/`

@@ -19,8 +19,8 @@ export const declineOffer = async (token: string): Promise<{ detail: string }> =
 export const submitPersonalData = async (
   token: string,
   payload: PersonalDataPayload
-): Promise<{ detail: string }> => {
-  const { data } = await api.post<{ detail: string }>(
+): Promise<{ detail: string; sign_token: string }> => {
+  const { data } = await api.post<{ detail: string; sign_token: string }>(
     `/offer/${token}/personal-data/`,
     payload
   )
