@@ -6,6 +6,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.notifications.tasks import send_new_application_notification
+
 from .models import Application, ApplicationStatus
 from .serializers import (
     ApproveApplicationSerializer,
@@ -25,7 +27,8 @@ class CreateApplicationView(APIView):
     def post(self, request: Request) -> Response:
         serializer = CreateApplicationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        application = serializer.save()
+        send_new_application_notification.delay(application.id)
         return Response(
             {"detail": "Заявка принята! Мы рассмотрим её и свяжемся с вами в ближайшее время."},
             status=status.HTTP_201_CREATED,
@@ -107,23 +110,6 @@ class AdminRejectApplicationView(APIView):
 
         ApplicationService.reject(application, serializer.validated_data["rejection_reason"])
         return Response({"detail": "Заявка отклонена"})
-
-
-class AdminContractDownloadView(APIView):
-    """GET /api/admin/applications/:id/download"""
-
-    permission_classes = [IsAdminUser]
-
-    def get(self, request: Request, pk: str) -> Response:
-        application = Application.objects.get(pk=pk)
-
-        if not hasattr(application, "contract") or not application.contract.is_signed:
-            return Response(
-                {"detail": "Подписанный договор не найден"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        return Response({"url": application.contract.pdf_file.url})
 
 
 class AdminContractPreviewView(APIView):

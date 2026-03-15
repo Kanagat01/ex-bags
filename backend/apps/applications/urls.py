@@ -9,6 +9,5 @@ urlpatterns = [
     path("admin/applications/<int:pk>/", AdminApplicationDetailView.as_view(), name="admin-application-detail"),
     path("admin/applications/<int:pk>/approve/", AdminApproveApplicationView.as_view(), name="admin-application-approve"),
     path("admin/applications/<int:pk>/reject/", AdminRejectApplicationView.as_view(), name="admin-application-reject"),
-    path("admin/applications/<int:pk>/download/", AdminContractDownloadView.as_view(), name="admin-contract-download"),
     path("admin/applications/<int:pk>/contract/", AdminContractPreviewView.as_view(), name="admin-contract-preview")
 ]

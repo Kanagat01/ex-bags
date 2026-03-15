@@ -61,3 +61,15 @@ def send_contract_signed_notification(application_id: str) -> None:
             brand=application.brand,
             model=application.model,
         )
+        
+    # Уведомление администратору
+    EmailService.send_contract_signed_admin_notification(application)
+
+
+@shared_task
+def send_new_application_notification(application_id: int) -> None:
+    from apps.applications.models import Application
+    from apps.notifications.services.email import EmailService
+
+    application = Application.objects.get(id=application_id)
+    EmailService.send_new_application_admin_notification(application)

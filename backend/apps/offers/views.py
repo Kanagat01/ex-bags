@@ -70,4 +70,5 @@ class PersonalDataView(APIView):
 
         OfferService.save_personal_data(offer.application, serializer.validated_data)
 
-        return Response({"detail": "Данные сохранены, договор формируется"})
+        sign_token = offer.application.contract.sign_token
+        return Response({"detail": "Данные сохранены", "sign_token": str(sign_token)})

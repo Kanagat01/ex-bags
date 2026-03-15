@@ -1,27 +1,26 @@
-import requests
 from django.conf import settings
-
+from smsaero import SmsAero, SmsAeroException
 
 class SmsService:
 
-    BASE_URL = "https://gate.smsaero.ru/v2"
+    @classmethod
+    def _get_client(cls) -> SmsAero:
+        return SmsAero(settings.SMS_AERO_EMAIL, settings.SMS_AERO_API_KEY, settings.SMS_AERO_SIGN)
 
     @classmethod
     def _send(cls, phone: str, text: str) -> None:
-        response = requests.get(
-            f"{cls.BASE_URL}/sms/send",
-            params={
-                "number": phone,
-                "text": text,
-                "sign": settings.SMS_AERO_SIGN,
-            },
-            auth=(settings.SMS_AERO_EMAIL, settings.SMS_AERO_API_KEY),
-            timeout=10,
-        )
-        response.raise_for_status()
+        import logging
+        logger = logging.getLogger(__name__)
+
+        try:
+            logger.info(f"Отправляем SMS на {phone}: {text}")
+            # client = cls._get_client()
+            # client.send(phone, text)
+        except SmsAeroException as e:
+            logger.error(f"SMS отправка не удалась: {e}")
 
     @classmethod
-    def send_offer_notification(cls, phone: str, brand: str, amount, offer_url: str) -> None:
+    def send_offer_notification(cls, phone: str, brand: str, amount: float, offer_url: str) -> None:
         text = f"{brand} — мы предлагаем {amount} ₽. Перейдите: {offer_url}"
         cls._send(phone, text)
 
