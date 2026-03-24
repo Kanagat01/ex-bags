@@ -21,8 +21,8 @@ export const FORMAT_LABELS: Record<ApplicationFormat, string> = {
 }
 
 export const FORMAT_DESCRIPTIONS: Record<ApplicationFormat, string> = {
-  [ApplicationFormat.PURCHASE]: "Моментальная продажа — компания выкупает сумку сразу по фиксированной цене",
-  [ApplicationFormat.TRADE_IN]: "Сдайте сумку и получите кредит на покупку другого товара",
+  [ApplicationFormat.PURCHASE]: "Продажа При \"выкупе\" вы получаете оплату за акссесуар сразу после согласования условий и подтверждения подлинности, в случае \"реализации\" после продажи изделия новому владельцу.",
+  [ApplicationFormat.TRADE_IN]: "Мы оценим ваше изделие и предложим стоимость, которая будет являться депозитом для покупки акссесуара из ассортимента (ex)bags.",
   [ApplicationFormat.COMMISSION]: "Сумка продаётся через площадку, вы получаете деньги после продажи",
 }
 

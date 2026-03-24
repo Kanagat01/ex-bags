@@ -10,10 +10,10 @@ export const Footer = () => {
   }, [])
 
   return (
-    <footer className="w-full border-t border-neutral-200 mt-auto">
-      <div className="max-w-5xl mx-auto px-4 py-6 flex items-center justify-between text-sm text-neutral-500">
-        <span>© {year} Ex-Bags</span>
-        <span>Платформа приёма люксовых сумок</span>
+    <footer className="w-full bg-black border-t border-neutral-200 mt-auto">
+      <div className="max-w-6xl mx-auto p-6 flex items-center justify-between text-sm text-white">
+        <span>(ex)bags - ресейл платформа люксовых сумок и аксессуаров</span>
+        <span>© (ex)bags {year}</span>
       </div>
     </footer>
   )
