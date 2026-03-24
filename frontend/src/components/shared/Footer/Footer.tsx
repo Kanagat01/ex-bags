@@ -13,7 +13,7 @@ export const Footer = () => {
     <footer className="w-full bg-black border-t border-neutral-200 mt-auto">
       <div className="max-w-6xl mx-auto p-6 flex items-center justify-between text-sm text-white">
         <span>(ex)bags - ресейл платформа люксовых сумок и аксессуаров</span>
-        <span>© (ex)bags {year}</span>
+        <span className="text-end">© (ex)bags {year}</span>
       </div>
     </footer>
   )
