@@ -554,6 +554,9 @@ dev = [
     { name = "pytest-django" },
     { name = "ruff" },
 ]
+production = [
+    { name = "gunicorn" },
+]
 
 [package.metadata]
 requires-dist = [
@@ -579,6 +582,7 @@ dev = [
     { name = "pytest-django", specifier = ">=4.12.0" },
     { name = "ruff", specifier = ">=0.15.5" },
 ]
+production = [{ name = "gunicorn", specifier = ">=25.2.0" }]
 
 [[package]]
 name = "fonttools"
@@ -634,6 +638,18 @@ woff = [
     { name = "brotli", marker = "platform_python_implementation == 'CPython'" },
     { name = "brotlicffi", marker = "platform_python_implementation != 'CPython'" },
     { name = "zopfli" },
+]
+
+[[package]]
+name = "gunicorn"
+version = "25.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "packaging" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/dd/13/dd3f8e40ea3ee907a6cbf3d1f1f81afcc3ecd0087d313baabfe95372f15c/gunicorn-25.2.0.tar.gz", hash = "sha256:10bd7adb36d44945d97d0a1fdf9a0fb086ae9c7b39e56b4dece8555a6bf4a09c", size = 632709, upload-time = "2026-03-24T22:49:54.433Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/53/fb024445837e02cd5cf989cf349bfac6f3f433c05184ea5d49c8ade751c6/gunicorn-25.2.0-py3-none-any.whl", hash = "sha256:88f5b444d0055bf298435384af7294f325e2273fd37ba9f9ff7b98e0a1e5dfdc", size = 211659, upload-time = "2026-03-24T22:49:52.528Z" },
 ]
 
 [[package]]

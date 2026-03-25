@@ -14,8 +14,22 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
-RUN UV_HTTP_TIMEOUT=300 uv sync --frozen
+RUN UV_HTTP_TIMEOUT=300 uv sync --frozen --group production
 
 COPY . .
 
-EXPOSE 8000
+RUN mkdir -p /app/staticfiles /app/media
+
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+CMD ["uv", "run", "gunicorn", "config.wsgi:application", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "4", \
+     "--threads", "2", \
+     "--worker-class", "gthread", \
+     "--max-requests", "1000", \
+     "--max-requests-jitter", "100", \
+     "--log-level", "info"]
