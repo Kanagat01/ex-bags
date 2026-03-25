@@ -80,7 +80,6 @@ cp frontend/.env.example frontend/.env
 # заполни .env файлы
 
 docker compose up -d
-docker compose exec backend uv run python manage.py migrate
 docker compose exec backend uv run python manage.py createsuperuser
 ```
 
