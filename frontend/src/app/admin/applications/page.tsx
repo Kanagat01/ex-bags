@@ -5,7 +5,7 @@ import Link from "next/link"
 import { getApplications } from "@/api"
 import { Application, ApplicationStatus, ApplicationFormat } from "@/types"
 import { useApplicationStore } from "@/store"
-import { StatusBadge } from "@/components/ui"
+import { Input, Select, StatusBadge } from "@/components/ui"
 import { PageLoader, ErrorMessage } from "@/components/shared"
 import { FORMAT_LABELS, formatPrice, formatDateTime } from "@/utils"
 
@@ -63,55 +63,41 @@ export default function AdminApplicationsPage() {
 
       {/* Фильтры */}
       <div className="flex flex-wrap gap-3 items-end">
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-500">Статус</label>
-          <select
-            value={filters.status}
-            onChange={(e) => setFilter("status", e.target.value)}
-            className="border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-black"
-          >
-            {statusOptions.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Статус"
+          options={statusOptions}
+          value={filters.status}
+          onChange={(e) => setFilter("status", e.target.value)}
+          className="border border-neutral-200 -mb-1 ps-3 pe-8 py-2 text-sm outline-none focus:border-black"
+        />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-500">Формат</label>
-          <select
-            value={filters.format}
-            onChange={(e) => setFilter("format", e.target.value)}
-            className="border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-black"
-          >
-            {formatOptions.map((o) => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-          </select>
-        </div>
+        <Select
+          label="Формат"
+          options={formatOptions}
+          value={filters.format}
+          onChange={(e) => setFilter("format", e.target.value)}
+          className="border border-neutral-200 -mb-1 ps-3 pe-8 py-2 text-sm outline-none focus:border-black"
+        />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-500">С</label>
-          <input
-            type="date"
-            value={filters.date_from}
-            onChange={(e) => setFilter("date_from", e.target.value)}
-            className="border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-black"
-          />
-        </div>
+        <Input
+          label="С"
+          type="date"
+          value={filters.date_from}
+          onChange={(e) => setFilter("date_from", e.target.value)}
+          className="border border-neutral-200 -mb-1 px-3 py-2 text-sm outline-none focus:border-black"
+        />
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-500">По</label>
-          <input
-            type="date"
-            value={filters.date_to}
-            onChange={(e) => setFilter("date_to", e.target.value)}
-            className="border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-black"
-          />
-        </div>
+        <Input
+          label="По"
+          type="date"
+          value={filters.date_to}
+          onChange={(e) => setFilter("date_to", e.target.value)}
+          className="border border-neutral-200 -mb-1 px-3 py-2 text-sm outline-none focus:border-black"
+        />
 
         <button
           onClick={resetFilters}
-          className="text-sm text-neutral-500 underline hover:text-black transition-colors pb-2"
+          className="text-sm text-neutral-500 underline hover:text-black transition-colors pb-3"
         >
           Сбросить
         </button>
@@ -127,51 +113,59 @@ export default function AdminApplicationsPage() {
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-neutral-200 text-left text-neutral-500">
-                <th className="pb-3 pr-4 font-medium">Товар</th>
-                <th className="pb-3 pr-4 font-medium">Формат</th>
-                <th className="pb-3 pr-4 font-medium">Телефон</th>
-                <th className="pb-3 pr-4 font-medium">Желаемая цена</th>
-                <th className="pb-3 pr-4 font-medium">Предложена</th>
-                <th className="pb-3 pr-4 font-medium">Статус</th>
-                <th className="pb-3 font-medium">Дата</th>
-              </tr>
-            </thead>
-            <tbody>
-              {applications.map((app: Application) => (
-                <tr
-                  key={app.id}
-                  className="border-b border-neutral-100 hover:bg-neutral-50 transition-colors"
-                >
-                  <td className="py-3 pr-4">
-                    <Link
-                      href={`/admin/applications/${app.id}`}
-                      className="font-medium hover:underline"
-                    >
-                      {app.brand} {app.model}
-                    </Link>
-                  </td>
-                  <td className="py-3 pr-4 text-neutral-500">
-                    {FORMAT_LABELS[app.format]}
-                  </td>
-                  <td className="py-3 pr-4 text-neutral-500">{app.phone}</td>
-                  <td className="py-3 pr-4">{formatPrice(app.desired_price)}</td>
-                  <td className="py-3 pr-4">
-                    {app.offered_price ? formatPrice(app.offered_price) : "—"}
-                  </td>
-                  <td className="py-3 pr-4">
-                    <StatusBadge status={app.status} />
-                  </td>
-                  <td className="py-3 text-neutral-500 whitespace-nowrap">
-                    {formatDateTime(app.created_at)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+  <table className="w-full min-w-225 border-separate border-spacing-y-4 text-sm">
+    <thead>
+      <tr className="text-center text-black text-lg">
+        <th className="ps-5 pb-4 pr-4 font-medium text-left">Товар</th>
+        <th className="pb-4 pr-4 font-medium">Формат</th>
+        <th className="pb-4 pr-4 font-medium">Телефон</th>
+        <th className="pb-4 pr-4 font-medium">Желаемая цена</th>
+        <th className="pb-4 pr-4 font-medium">Предложена</th>
+        <th className="pb-4 pr-4 font-medium">Статус</th>
+        <th className="pb-4 font-medium">Дата</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {applications.map((app: Application) => (
+        <tr key={app.id} className="text-center text-neutral-500">
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black border-l-black border-l-[0.8px] rounded-l-lg ps-5 text-left">
+            <Link
+              href={`/admin/applications/${app.id}`}
+              className="text-black font-medium hover:underline"
+            >
+              {app.brand} {app.model}
+            </Link>
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black">
+            {FORMAT_LABELS[app.format]}
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black">
+            {app.phone}
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black">
+            {formatPrice(app.desired_price)}
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black">
+            {app.offered_price ? formatPrice(app.offered_price) : "—"}
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black">
+            <StatusBadge status={app.status} />
+          </td>
+
+          <td className="py-3 border-t-[0.8px] border-b-[0.8px] border-black border-r-black border-r-[0.8px] rounded-r-lg">
+            {formatDateTime(app.created_at)}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
       )}
     </div>
   )

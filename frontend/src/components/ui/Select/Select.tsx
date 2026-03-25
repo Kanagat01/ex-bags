@@ -14,15 +14,15 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, options, placeholder, className = "", ...props }, ref) => {
-    const base = "w-full border px-3 py-2.5 text-sm outline-none transition-colors bg-white appearance-none"
+    const base = "w-full border-[0.8px] rounded-[8px] px-3 py-2.5 text-sm outline-none transition-colors bg-white appearance-none"
     const state = error
       ? "border-red-500 focus:border-red-500"
-      : "border-neutral-300 focus:border-black"
+      : "border-black"
 
     return (
       <div className="flex flex-col gap-1">
         {label && (
-          <label className="text-sm font-medium text-neutral-700">
+          <label className="text-sm font-medium text-neutral-700 mb-2">
             {label}
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>

@@ -4,7 +4,7 @@ import { Footer } from "@/components/shared"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Ex-Bags — платформа приёма люксовых сумок",
+  title: "(ex)bags - ресейл платформа люксовых сумок и аксессуаров",
   description: "Выкуп, Trade-In и реализация дизайнерских сумок",
 }
 

@@ -35,14 +35,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="flex items-center justify-center px-4 mt-15">
       <div className="w-full max-w-sm flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-medium">Вход</h1>
           <p className="text-sm text-neutral-500">Панель администратора Ex-Bags</p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <Input
             label="Логин"
             placeholder="admin"

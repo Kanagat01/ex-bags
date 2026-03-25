@@ -8,10 +8,10 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, hint, className = "", ...props }, ref) => {
-    const base = "w-full border px-3 py-2.5 text-sm outline-none transition-colors resize-none"
+    const base = "w-full border-[0.8px] rounded-[8px] px-3 py-2.5 text-sm outline-none transition-colors resize-none"
     const state = error
       ? "border-red-500 focus:border-red-500"
-      : "border-neutral-300 focus:border-black"
+      : "border-black"
 
     return (
       <div className="flex flex-col gap-1">
