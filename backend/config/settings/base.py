@@ -105,10 +105,9 @@ CELERY_RESULT_BACKEND = env("REDIS_URL", default="redis://localhost:6379/0")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
-# SMS Аэро
-SMS_AERO_EMAIL = env("SMS_AERO_EMAIL", default="")
-SMS_AERO_API_KEY = env("SMS_AERO_API_KEY", default="")
-SMS_AERO_SIGN = env("SMS_AERO_SIGN", default="")
+# SMS 
+SMS_INT_API_KEY = env("SMS_INT_API_KEY", default="")
+SMS_INT_SIGN = env("SMS_INT_SIGN", default="")
 
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

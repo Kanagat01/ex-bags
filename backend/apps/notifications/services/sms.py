@@ -1,22 +1,46 @@
+import logging
+import requests
 from django.conf import settings
-from smsaero import SmsAero, SmsAeroException
+
+logger = logging.getLogger(__name__)
+
 
 class SmsService:
-
-    @classmethod
-    def _get_client(cls) -> SmsAero:
-        return SmsAero(settings.SMS_AERO_EMAIL, settings.SMS_AERO_API_KEY, settings.SMS_AERO_SIGN)
+    BASE_URL = "https://lcab.smsint.ru/json/v1.0"
 
     @classmethod
     def _send(cls, phone: str, text: str) -> None:
-        import logging
-        logger = logging.getLogger(__name__)
-
         try:
             logger.info(f"Отправляем SMS на {phone}: {text}")
-            # client = cls._get_client()
-            # client.send(phone, text)
-        except SmsAeroException as e:
+
+            response = requests.post(
+                f"{cls.BASE_URL}/sms/send/text",
+                headers={
+                    "X-Token": settings.SMS_INT_API_KEY,
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "messages": [
+                        {
+                            "recipient": phone,
+                            "sender": settings.SMS_INT_SIGN,
+                            "text": text,
+                        }
+                    ],
+                },
+                timeout=10,
+            )
+
+            response.raise_for_status()
+            data = response.json()
+
+            if not data.get("success"):
+                error = data.get("error", {})
+                logger.error(f"SMS не отправлен: {error}")
+            else:
+                logger.info(f"SMS успешно отправлен: {data}")
+
+        except requests.RequestException as e:
             logger.error(f"SMS отправка не удалась: {e}")
 
     @classmethod
