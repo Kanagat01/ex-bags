@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
       - redis
-    expose:             
+    expose:
       - "8000"
     volumes:
       - ./backend/apps:/app/apps
@@ -61,7 +61,7 @@ services:
     image: nginx:alpine
     restart: always
     ports:
-      - "80:80"      
+      - "80:80"
       # - "443:443"
     depends_on:
       - backend
@@ -71,7 +71,6 @@ services:
       - static_files:/app/staticfiles:ro
       - media_files:/app/media:ro
       # - ./nginx/logs:/var/log/nginx
-
 
 volumes:
   postgres_data:

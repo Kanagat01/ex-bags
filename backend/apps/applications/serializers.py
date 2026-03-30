@@ -1,5 +1,11 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from .models import Application, ApplicationPhoto
+
+
+def validate_max_words(value):
+    if len(value.split()) > 100:
+        raise ValidationError("Не более 100 слов разрешено.")
 
 
 class ApplicationPhotoSerializer(serializers.ModelSerializer):
@@ -74,7 +80,6 @@ class ApplicationListSerializer(serializers.ModelSerializer):
 
 class ApplicationDetailSerializer(serializers.ModelSerializer):
     """Детальная карточка заявки для админа"""
-
     photos = ApplicationPhotoSerializer(many=True, read_only=True)
 
     class Meta:
@@ -108,4 +113,8 @@ class ApproveApplicationSerializer(serializers.Serializer):
 class RejectApplicationSerializer(serializers.Serializer):
     """Администратор отклоняет заявку"""
 
-    rejection_reason = serializers.CharField(max_length=500)
+    rejection_reason = serializers.CharField(
+        validators=[validate_max_words],
+        required=False,
+        allow_blank=True
+    )

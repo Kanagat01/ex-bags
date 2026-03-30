@@ -12,6 +12,7 @@ class SmsService:
     def _send(cls, phone: str, text: str) -> None:
         try:
             logger.info(f"Отправляем SMS на {phone}: {text}")
+            phone = phone.lstrip("+")
 
             response = requests.post(
                 f"{cls.BASE_URL}/sms/send/text",
@@ -23,7 +24,6 @@ class SmsService:
                     "messages": [
                         {
                             "recipient": phone,
-                            "sender": settings.SMS_INT_SIGN,
                             "text": text,
                         }
                     ],
@@ -45,12 +45,12 @@ class SmsService:
 
     @classmethod
     def send_offer_notification(cls, phone: str, brand: str, amount: float, offer_url: str) -> None:
-        text = f"{brand} — мы предлагаем {amount} ₽. Перейдите: {offer_url}"
+        text = f"Мы готовы предложить вам {amount} ₽ за вашу сумку {brand}. Перейдите по ссылке, чтобы ознакомиться с условиями и принять решение: {offer_url}"
         cls._send(phone, text)
 
     @classmethod
-    def send_rejection_notification(cls, phone: str, brand: str) -> None:
-        text = f"К сожалению, мы не можем принять вашу сумку {brand}. Спасибо за обращение."
+    def send_rejection_notification(cls, phone: str, brand: str, reason: str) -> None:
+        text = f"К сожалению, мы не можем принять вашу сумку {brand}.\nПричина: {reason}"
         cls._send(phone, text)
 
     @classmethod
